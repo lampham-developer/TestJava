@@ -9,19 +9,14 @@ import entity.Category;
 import entity.Product;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import jdk.nashorn.internal.objects.NativeArray;
 
 /**
  *
@@ -39,7 +34,7 @@ public class Controller {
         System.out.println("Input Category Tag : ");
         String tag = sc.nextLine();
         if (!checkCategoryTag(tag)) {
-            System.out.println("Category tag already exist");
+            System.out.println("Category tag already exist !!!");
         } else {
             categoryList.add(new Category(name, tag));
             try {
@@ -86,23 +81,23 @@ public class Controller {
         System.out.println("Input Category_Tag : ");
         String tag = sc.nextLine();
         productList.add(new Product(name, tag));
-        if(checkCategoryTag(tag)){
-            System.out.println("Category tag doesn't exist");
-        }else{
+        if (checkCategoryTag(tag)) {
+            System.out.println("Category tag doesn't exist !!!");
+        } else {
             try {
-            FileOutputStream fos = new FileOutputStream("Product.bin");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            Product[] products = new Product[productList.size()];
-            for (int index = 0; index < productList.size(); index++) {
-                products[index] = productList.get(index);
-            }
+                FileOutputStream fos = new FileOutputStream("Product.bin");
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                Product[] products = new Product[productList.size()];
+                for (int index = 0; index < productList.size(); index++) {
+                    products[index] = productList.get(index);
+                }
 
-            oos.writeObject(products);
-            oos.close();
-            fos.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+                oos.writeObject(products);
+                oos.close();
+                fos.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
     }
@@ -136,20 +131,30 @@ public class Controller {
         ArrayList<Product> resultList = new ArrayList<>();
         System.out.println("Enter category_tag : ");
         String tag = sc.nextLine();
-        for (Product product : productList) {
-            if(product.getCategory_tag().equalsIgnoreCase(tag)) resultList.add(product);
-        }
-        
-        Collections.sort(resultList, new Comparator<Product>(){
-            @Override
-            public int compare(Product p1, Product p2) {
-                return p1.getName().toLowerCase().compareTo(p2.getName().toLowerCase());
+        if (checkCategoryTag(tag)) {
+            System.out.println("Category tag doesn't exist !!!");
+        } else {
+            for (Product product : productList) {
+                if (product.getCategory_tag().equalsIgnoreCase(tag)) {
+                    resultList.add(product);
+                }
             }
-            
-        });
-        System.out.println("Result : ");
-        for (Product product : resultList) {
-            System.out.println(product.getName());
+
+            Collections.sort(resultList, new Comparator<Product>() {
+                @Override
+                public int compare(Product p1, Product p2) {
+                    return p1.getName().toLowerCase().compareTo(p2.getName().toLowerCase());
+                }
+
+            });
+            if (resultList.isEmpty()) {
+                System.out.println("No products found in this category !!!");
+            } else {
+                System.out.println("Result : ");
+                for (Product product : resultList) {
+                    System.out.println(product.getName());
+                }
+            }
         }
     }
 
@@ -186,7 +191,7 @@ public class Controller {
                     loop = false;
                     break;
                 default:
-                    System.out.println("You mujst choose one option");
+                    System.out.println("You mujst choose one option !!!");
             }
         }
     }
